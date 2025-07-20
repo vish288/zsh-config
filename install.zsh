@@ -5,7 +5,7 @@
 # =============================================================================
 # Installs the organized zsh configuration on any macOS system
 # Author: Your Name
-# Repository: https://github.com/yourusername/zsh-config
+# Repository: https://github.com/vish288/zsh-config
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-REPO_URL="https://github.com/yourusername/zsh-config.git"
+REPO_URL="https://github.com/vish288/zsh-config.git"
 CONFIG_DIR="$HOME/.config/zsh"
 BACKUP_DIR="$HOME/.zsh-backup-$(date +%Y%m%d_%H%M%S)"
 

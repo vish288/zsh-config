@@ -30,12 +30,12 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 
 ### One-line install:
 ```zsh
-curl -fsSL https://raw.githubusercontent.com/yourusername/zsh-config/main/install.zsh | zsh
+curl -fsSL https://raw.githubusercontent.com/vish288/zsh-config/main/install.zsh | zsh
 ```
 
 ### Manual install:
 ```zsh
-git clone https://github.com/yourusername/zsh-config.git ~/.config/zsh
+git clone https://github.com/vish288/zsh-config.git ~/.config/zsh
 cd ~/.config/zsh
 ./install.zsh
 ```
