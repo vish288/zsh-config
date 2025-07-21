@@ -7,8 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-07-21
+
+### Added
+- **User-Agnostic Configuration**: All hardcoded user paths replaced with `$HOME` variables
+- **Enhanced CI/CD Pipeline**: Comprehensive validation with proper secret scanning
+- **Distribution Readiness**: Configuration now portable across different users and systems
+
 ### Changed
-- Apply comprehensive linting and formatting improvements
+- **Path References**: Updated pnpm, custom bin, gcloud SDK, and JetBrains Toolbox paths to use generic variables
+- **Secret Scanning**: Improved patterns to avoid false positives from legitimate GitHub URLs
+- **CI Testing Strategy**: Replaced runtime configuration testing with syntax validation
+
+### Fixed
+- **Secret Scanner False Positives**: Increased base64 threshold and excluded URL patterns
+- **CI Configuration Loading**: Better handling of missing dependencies in test environment
+- **AWS Key Detection**: More precise patterns to reduce false alerts
+
+### Security
+- **Portable Security**: Configuration maintains security while being user-agnostic
+- **Enhanced Secret Detection**: More accurate secret scanning with fewer false positives
 
 ## [1.1.1] - 2025-07-21
 
