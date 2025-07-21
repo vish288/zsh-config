@@ -123,6 +123,29 @@ function gcloud() {
 }
 
 # =============================================================================
+# SSH AGENT SETUP (1Password)
+# =============================================================================
+
+# Use 1Password SSH agent
+export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# Verify 1Password SSH agent is available
+if [[ -S "$SSH_AUTH_SOCK" ]]; then
+  # 1Password SSH agent handles key loading automatically
+  # No need to manually load keys - they're managed by 1Password
+  true
+else
+  echo "Warning: 1Password SSH agent not found. Ensure 1Password is running and SSH agent is enabled."
+  # Fallback to system SSH agent
+  if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    eval "$(ssh-agent -s)" >/dev/null 2>&1
+    # Load keys manually as fallback
+    ssh-add ~/.ssh/github-vish 2>/dev/null || true
+    ssh-add ~/.ssh/id_rsa 2>/dev/null || true
+  fi
+fi
+
+# =============================================================================
 # SECURITY AND CLEANUP
 # =============================================================================
 
