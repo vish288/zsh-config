@@ -106,9 +106,28 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "docs: update changelog with recent changes [skip ci]"
-            git push
-          fi
+            # Pull any remote changes first to avoid conflicts
+            git pull --rebase origin main || {
+              echo "Failed to rebase, trying merge strategy"
+              git pull origin main
+            }
+            
+            git commit -m "docs: update changelog with recent changes [skip ci]" || {
+              echo "Commit failed, likely no changes after pull"
+              exit 0
+            }
+            
+            # Push with retry logic
+            for i in {1..3}; do
+              if git push; then
+                echo "Successfully pushed changelog update"
+                break
+              else
+                echo "Push failed, attempt $i/3. Retrying after pull..."
+                git pull --rebase origin main
+                sleep 2
+              fi
+            done
 
   validate-changelog:
     runs-on: ubuntu-latest

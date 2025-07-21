@@ -106,7 +106,13 @@ jobs:
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
             git add VERSION.md
-            git commit -m "docs: update VERSION.md for $version [skip ci]" || true
+            
+            # Only commit if there are actual changes
+            if ! git diff --staged --quiet; then
+              git commit -m "docs: update VERSION.md for $version [skip ci]"
+            else
+              echo "No changes to VERSION.md needed"
+            fi
           fi
           
       - name: Create package archive

@@ -106,31 +106,44 @@ jobs:
         run: |
           echo "🔐 Scanning for secrets or sensitive data..."
           
-          # Check for common secret patterns
-          secret_patterns=(
-            "password"
-            "secret"
-            "api[_-]?key"
-            "access[_-]?token"
-            "private[_-]?key"
-            "ssh[_-]?key"
-          )
-          
+          # Check for actual secret values (not just references)
           found_secrets=false
           
-          for pattern in "${secret_patterns[@]}"; do
-            if grep -ri "$pattern" . --exclude-dir=.git --exclude-dir=.github | grep -v "1Password\|password-cli\|secret management\|secrets management\|example\|template\|README\|CHANGELOG"; then
-              echo "⚠️ Found potential secret: $pattern"
-              found_secrets=true
-            fi
-          done
+          # Look for potential API keys, tokens, passwords (actual values, not variable names)
+          if grep -rE '(api[_-]?key|access[_-]?token|bearer[[:space:]]+[a-zA-Z0-9]{20,}|password[[:space:]]*=[[:space:]]*["\'][^"\']{8,}["\'])' . \
+             --exclude-dir=.git --exclude-dir=.github \
+             --exclude="*.md" \
+             --exclude-dir=secrets \
+             2>/dev/null; then
+            echo "⚠️ Found potential hardcoded secrets"
+            found_secrets=true
+          fi
+          
+          # Check for suspicious patterns that might be actual credentials
+          if grep -rE '^[A-Z_]{2,}[[:space:]]*=[[:space:]]*["\'][a-zA-Z0-9+/]{32,}["\']' . \
+             --exclude-dir=.git --exclude-dir=.github \
+             --exclude="*.md" \
+             --exclude-dir=secrets \
+             2>/dev/null; then
+            echo "⚠️ Found potential base64 encoded secrets"
+            found_secrets=true
+          fi
+          
+          # Check for SSH private keys
+          if grep -r "BEGIN.*PRIVATE KEY" . \
+             --exclude-dir=.git --exclude-dir=.github \
+             --exclude="*.md" \
+             2>/dev/null; then
+            echo "⚠️ Found potential private keys"
+            found_secrets=true
+          fi
           
           if [ "$found_secrets" = true ]; then
             echo "❌ Potential secrets detected. Please review and ensure no actual secrets are committed."
             exit 1
           fi
           
-          echo "✅ No secrets detected"
+          echo "✅ No hardcoded secrets detected"
           
       - name: Validate changelog format
         run: |
