@@ -6,7 +6,7 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Added by Toolbox App
-export PATH="$PATH:/Users/visurya/Library/Application Support/JetBrains/Toolbox/scripts"
+export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 # Performance measurement (uncomment for debugging)
 # zmodload zsh/zprof
