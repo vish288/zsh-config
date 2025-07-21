@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **ASDF Completion File**: Changed from `asdf.bash` to `asdf` for proper completions
-- **ASDF Shims Path**: Updated to use `$HOME/.asdf/shims` instead of homebrew path 
+- **ASDF Shims Path**: Updated to use `$HOME/.asdf/shims` instead of homebrew path
 - **SSH Configuration**: Corrected malformed `IdentitiesOnly` setting
 - **Claude Command Availability**: Fixed auto-loading in fresh terminal sessions
 

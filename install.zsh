@@ -52,28 +52,28 @@ command_exists() {
 # Backup existing configuration
 backup_existing() {
     print_step "Backing up existing zsh configuration..."
-    
+
     mkdir -p "$BACKUP_DIR"
-    
+
     for file in .zshrc .zprofile .p10k.zsh .zsh_history; do
         if [[ -f "$HOME/$file" || -L "$HOME/$file" ]]; then
             cp -L "$HOME/$file" "$BACKUP_DIR/" 2>/dev/null || true
             print_success "Backed up $file"
         fi
     done
-    
+
     if [[ -d "$HOME/.config/zsh" ]]; then
         cp -r "$HOME/.config/zsh" "$BACKUP_DIR/config-zsh" 2>/dev/null || true
         print_success "Backed up existing .config/zsh"
     fi
-    
+
     echo -e "${GREEN}📦 Backup created at: $BACKUP_DIR${NC}"
 }
 
 # Install prerequisites
 install_prerequisites() {
     print_step "Installing prerequisites..."
-    
+
     # Check for Homebrew
     if ! command_exists brew; then
         print_warning "Homebrew not found. Installing..."
@@ -81,14 +81,14 @@ install_prerequisites() {
         eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
     print_success "Homebrew available"
-    
+
     # Install Oh My Zsh if not present
     if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
         print_warning "Oh My Zsh not found. Installing..."
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
     fi
     print_success "Oh My Zsh available"
-    
+
     # Install Powerlevel10k theme
     local p10k_dir="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
     if [[ ! -d "$p10k_dir" ]]; then
@@ -96,31 +96,31 @@ install_prerequisites() {
         git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
     fi
     print_success "Powerlevel10k available"
-    
+
     # Install zsh plugins
     local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
-    
+
     if [[ ! -d "$plugins_dir/zsh-autosuggestions" ]]; then
         git clone https://github.com/zsh-users/zsh-autosuggestions "$plugins_dir/zsh-autosuggestions"
     fi
-    
+
     if [[ ! -d "$plugins_dir/zsh-syntax-highlighting" ]]; then
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$plugins_dir/zsh-syntax-highlighting"
     fi
-    
+
     if [[ ! -d "$plugins_dir/you-should-use" ]]; then
         git clone https://github.com/MichaelAquilina/zsh-you-should-use.git "$plugins_dir/you-should-use"
     fi
-    
+
     print_success "ZSH plugins installed"
-    
+
     # Install asdf if not present
     if ! command_exists asdf; then
         print_warning "asdf not found. Installing..."
         brew install asdf
     fi
     print_success "asdf available"
-    
+
     # Install 1Password CLI
     if ! command_exists op; then
         print_warning "1Password CLI not found. Installing..."
@@ -132,7 +132,7 @@ install_prerequisites() {
 # Clone or update configuration
 install_config() {
     print_step "Installing zsh configuration..."
-    
+
     if [[ -d "$CONFIG_DIR/.git" ]]; then
         print_warning "Configuration directory exists. Updating..."
         cd "$CONFIG_DIR"
@@ -142,31 +142,31 @@ install_config() {
         rm -rf "$CONFIG_DIR"
         git clone "$REPO_URL" "$CONFIG_DIR"
     fi
-    
+
     print_success "Configuration installed"
 }
 
 # Create symlinks
 create_symlinks() {
     print_step "Creating symlinks..."
-    
+
     # Remove existing files/symlinks
     for file in .zshrc .zprofile .p10k.zsh; do
         [[ -f "$HOME/$file" || -L "$HOME/$file" ]] && rm "$HOME/$file"
     done
-    
+
     # Create new symlinks
     ln -sf "$CONFIG_DIR/zshrc" "$HOME/.zshrc"
     ln -sf "$CONFIG_DIR/zprofile" "$HOME/.zprofile"
     ln -sf "$CONFIG_DIR/themes/p10k.zsh" "$HOME/.p10k.zsh"
-    
+
     print_success "Symlinks created"
 }
 
 # Set up secrets template
 setup_secrets() {
     print_step "Setting up secrets management..."
-    
+
     local secrets_file="$CONFIG_DIR/secrets/secrets.zsh"
     if [[ ! -f "$secrets_file" ]]; then
         print_warning "Creating secrets template..."
@@ -186,17 +186,17 @@ setup_secrets() {
 echo "💡 Secrets loaded. Configure your tokens in ~/.config/zsh/secrets/secrets.zsh"
 EOF
     fi
-    
+
     # Set proper permissions
     chmod 600 "$CONFIG_DIR"/secrets/*.zsh
-    
+
     print_success "Secrets template ready"
 }
 
 # Test installation
 test_installation() {
     print_step "Testing installation..."
-    
+
     # Test new shell
     if zsh -l -c "source ~/.zshrc && echo 'Configuration loaded successfully'" >/dev/null 2>&1; then
         print_success "ZSH configuration loads correctly"
@@ -204,45 +204,45 @@ test_installation() {
         print_error "ZSH configuration failed to load"
         return 1
     fi
-    
+
     # Test asdf
     if zsh -c "asdf version" >/dev/null 2>&1; then
         print_success "asdf working"
     else
         print_warning "asdf not working - may need manual setup"
     fi
-    
+
     print_success "Installation test completed"
 }
 
 # Main installation function
 main() {
     print_header
-    
+
     # Check if running on macOS
     if [[ "$OSTYPE" != "darwin"* ]]; then
         print_error "This installer is designed for macOS only"
         exit 1
     fi
-    
+
     echo "This will install a comprehensive zsh configuration on your system."
     echo "Your existing configuration will be backed up."
     echo ""
     read -p "Continue? (y/N): " -n 1 -r
     echo
-    
+
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "Installation cancelled."
         exit 0
     fi
-    
+
     backup_existing
     install_prerequisites
     install_config
     create_symlinks
     setup_secrets
     test_installation
-    
+
     echo ""
     echo -e "${GREEN}🎉 Installation completed successfully!${NC}"
     echo ""

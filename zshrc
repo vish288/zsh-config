@@ -77,7 +77,7 @@ if [[ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]]; then
     source /opt/homebrew/opt/asdf/etc/bash_completion.d/asdf
     asdf "$@"
   }
-  
+
   # Auto-load asdf shims into PATH
   export PATH="$HOME/.asdf/shims:$PATH"
 fi

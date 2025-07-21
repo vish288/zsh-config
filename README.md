@@ -24,7 +24,7 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 ### 🛡️ **Security & Organization**
 - **Full 1Password CLI integration** - Complete secrets management system
 - **Snake_case naming convention** - Consistent organization standards
-- **Secrets manager utility** - CLI tool for managing 1Password secrets  
+- **Secrets manager utility** - CLI tool for managing 1Password secrets
 - **Clean home directory** - All configs organized in `~/.config/zsh/`
 - **Proper permissions** - Security-focused file permissions
 - **Comprehensive backup system** - Automatic backups and restore capabilities
@@ -49,7 +49,7 @@ cd ~/.config/zsh
 ~/.config/zsh/
 ├── README.md              # This documentation
 ├── install.zsh            # Installation script
-├── update.zsh             # Update script  
+├── update.zsh             # Update script
 ├── uninstall.zsh          # Uninstall script
 ├── test_config.zsh        # Configuration test
 ├── quick_test.zsh         # Fast validation test
@@ -82,7 +82,7 @@ cd ~/.config/zsh
 ```bash
 # Git (safe, no conflicts)
 gs     # git status
-ga     # git add  
+ga     # git add
 gc     # git commit
 gp     # git push
 glog   # pretty git log
@@ -107,7 +107,7 @@ gac "commit msg"     # Git add, commit in one command
 proj myproject       # Jump to project directory
 nx-new workspace     # Create new Nx workspace
 
-# System utilities  
+# System utilities
 extract file.tar.gz  # Smart extraction
 backup myfile        # Timestamped backup
 sysinfo             # System information
@@ -253,6 +253,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**🎉 Enjoy your supercharged terminal!** 
+**🎉 Enjoy your supercharged terminal!**
 
 If you find this configuration helpful, please ⭐ star the repository!
