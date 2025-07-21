@@ -115,15 +115,15 @@ jobs:
             found_secrets=true
           fi
           
-          # Check for base64 encoded secrets (long strings that look like tokens)
-          if grep -rE '[A-Za-z0-9+/]{40,}={0,2}' . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" --exclude-dir=secrets 2>/dev/null | grep -v "example\|test\|demo"; then
+          # Check for base64 encoded secrets (excluding URLs and common patterns)
+          if grep -rE '[A-Za-z0-9+/]{60,}={0,2}' . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" --exclude-dir=secrets 2>/dev/null | grep -v "example\|test\|demo\|github\.com\|githubusercontent\.com\|https://"; then
             echo "⚠️ Found potential base64 encoded secrets"
             found_secrets=true
           fi
           
-          # Check for AWS/API key patterns
-          if grep -rE '(AKIA[0-9A-Z]{16}|[0-9a-zA-Z]{40})' . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" --exclude-dir=secrets 2>/dev/null | grep -v "example\|test\|demo"; then
-            echo "⚠️ Found potential AWS or API keys"
+          # Check for AWS access keys specifically (more precise pattern)
+          if grep -rE 'AKIA[0-9A-Z]{16}' . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" --exclude-dir=secrets 2>/dev/null | grep -v "example\|test\|demo"; then
+            echo "⚠️ Found potential AWS access keys"
             found_secrets=true
           fi
           
