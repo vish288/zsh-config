@@ -109,32 +109,21 @@ jobs:
           # Check for actual secret values (not just references)
           found_secrets=false
           
-          # Look for potential API keys, tokens, passwords (actual values, not variable names)
-          if grep -rE '(api[_-]?key|access[_-]?token|bearer[[:space:]]+[a-zA-Z0-9]{20,}|password[[:space:]]*=[[:space:]]*["\'][^"\']{8,}["\'])' . \
-             --exclude-dir=.git --exclude-dir=.github \
-             --exclude="*.md" \
-             --exclude-dir=secrets \
-             2>/dev/null; then
-            echo "⚠️ Found potential hardcoded secrets"
+          # Check for SSH private keys
+          if grep -r "BEGIN.*PRIVATE KEY" . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" 2>/dev/null; then
+            echo "⚠️ Found potential private keys"
             found_secrets=true
           fi
           
-          # Check for suspicious patterns that might be actual credentials
-          if grep -rE '^[A-Z_]{2,}[[:space:]]*=[[:space:]]*["\'][a-zA-Z0-9+/]{32,}["\']' . \
-             --exclude-dir=.git --exclude-dir=.github \
-             --exclude="*.md" \
-             --exclude-dir=secrets \
-             2>/dev/null; then
+          # Check for base64 encoded secrets (long strings that look like tokens)
+          if grep -rE '[A-Za-z0-9+/]{40,}={0,2}' . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" --exclude-dir=secrets 2>/dev/null | grep -v "example\|test\|demo"; then
             echo "⚠️ Found potential base64 encoded secrets"
             found_secrets=true
           fi
           
-          # Check for SSH private keys
-          if grep -r "BEGIN.*PRIVATE KEY" . \
-             --exclude-dir=.git --exclude-dir=.github \
-             --exclude="*.md" \
-             2>/dev/null; then
-            echo "⚠️ Found potential private keys"
+          # Check for AWS/API key patterns
+          if grep -rE '(AKIA[0-9A-Z]{16}|[0-9a-zA-Z]{40})' . --exclude-dir=.git --exclude-dir=.github --exclude="*.md" --exclude-dir=secrets 2>/dev/null | grep -v "example\|test\|demo"; then
+            echo "⚠️ Found potential AWS or API keys"
             found_secrets=true
           fi
           
