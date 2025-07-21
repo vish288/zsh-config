@@ -37,28 +37,28 @@ print_success() {
 
 backup_current() {
     print_step "Creating backup before uninstall..."
-    
+
     mkdir -p "$BACKUP_DIR"
-    
+
     # Backup current configuration
     if [[ -d "$CONFIG_DIR" ]]; then
         cp -r "$CONFIG_DIR" "$BACKUP_DIR/"
         print_success "Configuration backed up"
     fi
-    
+
     # Backup current shell files
     for file in .zshrc .zprofile .p10k.zsh; do
         if [[ -f "$HOME/$file" || -L "$HOME/$file" ]]; then
             cp -L "$HOME/$file" "$BACKUP_DIR/" 2>/dev/null || true
         fi
     done
-    
+
     echo -e "${GREEN}📦 Backup created at: $BACKUP_DIR${NC}"
 }
 
 remove_symlinks() {
     print_step "Removing configuration symlinks..."
-    
+
     for file in .zshrc .zprofile .p10k.zsh; do
         if [[ -L "$HOME/$file" ]]; then
             rm "$HOME/$file"
@@ -69,7 +69,7 @@ remove_symlinks() {
 
 restore_defaults() {
     print_step "Restoring default zsh configuration..."
-    
+
     # Create minimal .zshrc
     cat > "$HOME/.zshrc" << 'EOF'
 # Default zsh configuration
@@ -104,7 +104,7 @@ EOF
 
 remove_config_directory() {
     print_step "Removing configuration directory..."
-    
+
     if [[ -d "$CONFIG_DIR" ]]; then
         read -p "Remove ~/.config/zsh directory? (y/N): " -n 1 -r
         echo
@@ -119,7 +119,7 @@ remove_config_directory() {
 
 cleanup_oh_my_zsh() {
     print_step "Oh My Zsh cleanup options..."
-    
+
     if [[ -d "$HOME/.oh-my-zsh" ]]; then
         echo "Oh My Zsh is installed. Options:"
         echo "1. Keep Oh My Zsh (recommended)"
@@ -127,7 +127,7 @@ cleanup_oh_my_zsh() {
         echo "3. Skip"
         read -p "Choose (1-3): " -n 1 -r
         echo
-        
+
         case $REPLY in
             2)
                 print_warning "Removing Oh My Zsh..."
@@ -143,24 +143,24 @@ cleanup_oh_my_zsh() {
 
 main() {
     print_header
-    
+
     echo "This will uninstall the zsh configuration and restore defaults."
     echo "Your current configuration will be backed up first."
     echo ""
     read -p "Continue with uninstall? (y/N): " -n 1 -r
     echo
-    
+
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "Uninstall cancelled."
         exit 0
     fi
-    
+
     backup_current
     remove_symlinks
     restore_defaults
     remove_config_directory
     cleanup_oh_my_zsh
-    
+
     echo ""
     echo -e "${GREEN}🎉 Uninstall completed!${NC}"
     echo ""

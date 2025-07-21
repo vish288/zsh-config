@@ -28,7 +28,7 @@ add_secret() {
     local title="$1"
     local secret="$2"
     local notes="${3:-Development secret}"
-    
+
     echo -e "${GREEN}➕ Adding secret: $title${NC}"
     op item create --vault="Contracts" --title="$title" --category="API Credential" \
         --tags="development,lcl" \
@@ -40,7 +40,7 @@ add_secret() {
 update_secret() {
     local title="$1"
     local secret="$2"
-    
+
     echo -e "${YELLOW}🔄 Updating secret: $title${NC}"
     op item edit "$title" --vault="Contracts" "credential[password]=$secret"
     echo -e "${GREEN}✅ Secret updated successfully${NC}"
@@ -48,7 +48,7 @@ update_secret() {
 
 get_secret() {
     local title="$1"
-    
+
     echo -e "${GREEN}🔍 Retrieving secret: $title${NC}"
     op item get "$title" --vault="Contracts" --field="credential"
 }
@@ -56,7 +56,7 @@ get_secret() {
 test_secrets() {
     echo -e "${GREEN}🧪 Testing current secret configuration:${NC}"
     source ~/.config/zsh/secrets/secrets.zsh
-    
+
     echo ""
     echo "Environment variables loaded:"
     [[ -n "${GITLAB_ACCESS_TOKEN:-}" ]] && echo "✅ GITLAB_ACCESS_TOKEN: ${GITLAB_ACCESS_TOKEN:0:8}..."
@@ -66,7 +66,7 @@ test_secrets() {
 
 backup_secrets() {
     local backup_file="$HOME/.config/zsh/secrets/backup_$(date +%Y%m%d_%H%M%S).json"
-    
+
     echo -e "${GREEN}💾 Creating secrets backup...${NC}"
     op item list --vault="Contracts" --tags="development" --format=json > "$backup_file"
     echo -e "${GREEN}✅ Backup saved to: $backup_file${NC}"

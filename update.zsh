@@ -49,23 +49,23 @@ check_git_repo() {
 
 backup_current() {
     print_step "Creating backup before update..."
-    
+
     mkdir -p "$BACKUP_DIR"
-    
+
     # Backup current configuration
     if [[ -d "$CONFIG_DIR" ]]; then
         cp -r "$CONFIG_DIR" "$BACKUP_DIR/"
         print_success "Configuration backed up"
     fi
-    
+
     echo -e "${GREEN}📦 Backup created at: $BACKUP_DIR${NC}"
 }
 
 update_configuration() {
     print_step "Updating configuration from repository..."
-    
+
     cd "$CONFIG_DIR"
-    
+
     # Check for local changes
     if ! git diff --quiet; then
         print_warning "Local changes detected!"
@@ -75,7 +75,7 @@ update_configuration() {
         echo "3. Cancel update"
         read -p "Choose (1-3): " -n 1 -r
         echo
-        
+
         case $REPLY in
             1)
                 git stash push -m "Auto-stash before update $(date)"
@@ -91,22 +91,22 @@ update_configuration() {
                 ;;
         esac
     fi
-    
+
     # Fetch and update
     git fetch origin
-    
+
     # Check if updates are available
     local local_commit=$(git rev-parse HEAD)
     local remote_commit=$(git rev-parse origin/main)
-    
+
     if [[ "$local_commit" == "$remote_commit" ]]; then
         print_success "Configuration is already up to date"
         return 0
     fi
-    
+
     print_step "Applying updates..."
     git pull origin main
-    
+
     # If there were stashed changes, offer to apply them
     if git stash list | grep -q "Auto-stash before update"; then
         echo ""
@@ -121,23 +121,23 @@ update_configuration() {
             fi
         fi
     fi
-    
+
     print_success "Configuration updated successfully"
 }
 
 update_plugins() {
     print_step "Updating Oh My Zsh and plugins..."
-    
+
     # Update Oh My Zsh
     if [[ -d "$HOME/.oh-my-zsh" ]]; then
         cd "$HOME/.oh-my-zsh"
         git pull origin master 2>/dev/null || print_warning "Oh My Zsh update failed"
         print_success "Oh My Zsh updated"
     fi
-    
+
     # Update plugins
     local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
-    
+
     for plugin_dir in "$plugins_dir"/*; do
         if [[ -d "$plugin_dir/.git" ]]; then
             local plugin_name=$(basename "$plugin_dir")
@@ -146,7 +146,7 @@ update_plugins() {
             print_success "$plugin_name updated"
         fi
     done
-    
+
     # Update Powerlevel10k
     local p10k_dir="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
     if [[ -d "$p10k_dir/.git" ]]; then
@@ -158,7 +158,7 @@ update_plugins() {
 
 test_configuration() {
     print_step "Testing updated configuration..."
-    
+
     if zsh -l -c "source ~/.zshrc && echo 'Configuration test passed'" >/dev/null 2>&1; then
         print_success "Configuration loads correctly"
     else
@@ -170,7 +170,7 @@ test_configuration() {
 
 show_changelog() {
     print_step "Recent changes:"
-    
+
     cd "$CONFIG_DIR"
     echo ""
     git log --oneline -10 --pretty=format:"  %C(green)%h%C(reset) %s %C(dim)(%cr)%C(reset)"
@@ -179,14 +179,14 @@ show_changelog() {
 
 main() {
     print_header
-    
+
     check_git_repo
     backup_current
     update_configuration
     update_plugins
     test_configuration
     show_changelog
-    
+
     echo ""
     echo -e "${GREEN}🎉 Update completed successfully!${NC}"
     echo ""

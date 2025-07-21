@@ -7,7 +7,7 @@
 - **After**: asdf lazy loads automatically, works immediately in any new shell
 - **Solution**: Proper asdf initialization with shims in PATH
 
-### 2. **Alias Conflicts** 
+### 2. **Alias Conflicts**
 - **Before**: Single-letter aliases conflicted with system commands
 - **After**: Safe, descriptive aliases that don't override system commands
 - **Solution**: Organized aliases in separate modular files
@@ -33,7 +33,7 @@
 ├── test_config.zsh       # Test script
 ├── plugins/              # Plugin configurations
 │   ├── oh-my-zsh.zsh     # Oh My Zsh setup
-│   ├── powerlevel10k.zsh # P10k theme config  
+│   ├── powerlevel10k.zsh # P10k theme config
 │   └── completions.zsh   # Custom completions
 ├── aliases/              # Alias definitions
 │   ├── core.zsh          # Essential aliases
@@ -88,7 +88,7 @@ Run the test script to verify everything works:
 ### Adding New Aliases
 Create or edit files in `~/.config/zsh/aliases/`
 
-### Adding New Functions  
+### Adding New Functions
 Create or edit files in `~/.config/zsh/functions/`
 
 ### Adding Secrets
@@ -100,7 +100,7 @@ Edit files in `~/.config/zsh/plugins/`
 ## 🛡️ Security Features
 
 - **1Password CLI Integration** - Ready for secure secret loading
-- **No hardcoded secrets** - Template-based secret management  
+- **No hardcoded secrets** - Template-based secret management
 - **Proper file permissions** - umask 022 applied
 - **Secure PATH management** - No insecure path entries
 
@@ -115,7 +115,7 @@ Edit files in `~/.config/zsh/plugins/`
 
 ### Symlinks Created
 - `~/.zshrc` → `~/.config/zsh/zshrc`
-- `~/.zprofile` → `~/.config/zsh/zprofile`  
+- `~/.zprofile` → `~/.config/zsh/zprofile`
 - `~/.p10k.zsh` → `~/.config/zsh/themes/p10k.zsh`
 
 ### Files Archived
