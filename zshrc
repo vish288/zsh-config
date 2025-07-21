@@ -74,12 +74,12 @@ if [[ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]]; then
     unfunction asdf
     source /opt/homebrew/opt/asdf/libexec/asdf.sh
     # Also source completions
-    source /opt/homebrew/opt/asdf/etc/bash_completion.d/asdf.bash
+    source /opt/homebrew/opt/asdf/etc/bash_completion.d/asdf
     asdf "$@"
   }
   
   # Auto-load asdf shims into PATH
-  export PATH="/opt/homebrew/opt/asdf/shims:$PATH"
+  export PATH="$HOME/.asdf/shims:$PATH"
 fi
 
 # =============================================================================
