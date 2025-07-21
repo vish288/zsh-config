@@ -52,7 +52,7 @@ export NVM_AUTO_USE=true
 # =============================================================================
 
 # pnpm configuration
-export PNPM_HOME="/Users/visurya/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -60,8 +60,8 @@ esac
 
 # Custom bin directory
 case ":$PATH:" in
-  *":/Users/visurya/bin:"*) ;;
-  *) export PATH="$PATH:/Users/visurya/bin" ;;
+  *":$HOME/bin:"*) ;;
+  *) export PATH="$PATH:$HOME/bin" ;;
 esac
 
 # =============================================================================
@@ -116,7 +116,7 @@ done
 
 function gcloud() {
   unfunction gcloud
-  local gcloud_path="/Users/visurya/Workspace/LcL-SDM/setup/google-cloud-sdk"
+  local gcloud_path="$HOME/Workspace/LcL-SDM/setup/google-cloud-sdk"
   [[ -f "$gcloud_path/path.zsh.inc" ]] && source "$gcloud_path/path.zsh.inc"
   [[ -f "$gcloud_path/completion.zsh.inc" ]] && source "$gcloud_path/completion.zsh.inc"
   gcloud "$@"
