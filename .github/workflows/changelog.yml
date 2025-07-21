@@ -1,0 +1,139 @@
+name: Update Changelog
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+      - name: Check if CHANGELOG.md exists
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo "Creating initial CHANGELOG.md"
+            cat << 'EOF' > CHANGELOG.md
+          # Changelog
+          
+          All notable changes to this project will be documented in this file.
+          
+          The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+          and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+          
+          ## [Unreleased]
+          
+          ### Added
+          - Initial changelog automation
+          
+          EOF
+          fi
+          
+      - name: Generate changelog entry from commits
+        id: changelog
+        run: |
+          # Get commits since last tag
+          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          if [ -z "$last_tag" ]; then
+            # No tags, get all commits
+            commits=$(git log --oneline --pretty=format:"- %s" HEAD)
+          else
+            # Get commits since last tag
+            commits=$(git log --oneline --pretty=format:"- %s" ${last_tag}..HEAD)
+          fi
+          
+          # Only proceed if there are new commits
+          if [ -n "$commits" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "commits<<EOF" >> $GITHUB_OUTPUT
+            echo "$commits" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Update CHANGELOG.md
+        if: steps.changelog.outputs.has_changes == 'true'
+        run: |
+          # Create temporary file with new changelog
+          cat << 'EOF' > /tmp/new_changelog.md
+          # Changelog
+          
+          All notable changes to this project will be documented in this file.
+          
+          The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+          and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+          
+          ## [Unreleased]
+          
+          ### Changed
+          ${{ steps.changelog.outputs.commits }}
+          
+          EOF
+          
+          # Append existing changelog content (skip header and unreleased section)
+          if [ -f CHANGELOG.md ]; then
+            # Find first version section and append everything from there
+            awk '/^## \[[0-9]/ {found=1} found {print}' CHANGELOG.md >> /tmp/new_changelog.md
+          fi
+          
+          # Replace changelog
+          mv /tmp/new_changelog.md CHANGELOG.md
+          
+      - name: Commit updated changelog
+        if: steps.changelog.outputs.has_changes == 'true'
+        run: |
+          git add CHANGELOG.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update changelog with recent changes [skip ci]"
+            git push
+          fi
+
+  validate-changelog:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Validate changelog format
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo "❌ CHANGELOG.md not found"
+            exit 1
+          fi
+          
+          # Check basic format
+          if ! grep -q "# Changelog" CHANGELOG.md; then
+            echo "❌ CHANGELOG.md missing main header"
+            exit 1
+          fi
+          
+          if ! grep -q "\[Keep a Changelog\]" CHANGELOG.md; then
+            echo "❌ CHANGELOG.md missing Keep a Changelog reference"
+            exit 1
+          fi
+          
+          echo "✅ CHANGELOG.md format is valid"

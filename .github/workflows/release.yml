@@ -1,0 +1,206 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Validate configuration
+        run: |
+          # Test ZSH syntax
+          if command -v zsh >/dev/null 2>&1; then
+            zsh -n zshrc || exit 1
+          fi
+          
+          # Check required files exist
+          required_files=("install.zsh" "uninstall.zsh" "test_config.zsh" "CHANGELOG.md" "VERSION.md")
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Required file missing: $file"
+              exit 1
+            fi
+          done
+          
+          echo "✅ Configuration validation passed"
+
+  release:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Extract version from tag
+        id: version
+        run: |
+          version=${GITHUB_REF#refs/tags/}
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "version_number=${version#v}" >> $GITHUB_OUTPUT
+          
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          prev_tag=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          echo "prev_tag=$prev_tag" >> $GITHUB_OUTPUT
+          
+      - name: Extract changelog for version
+        id: changelog
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          
+          # Try to extract from CHANGELOG.md first
+          changelog_content=""
+          if [ -f CHANGELOG.md ]; then
+            changelog_content=$(awk "/^## \[$version\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md)
+          fi
+          
+          # If no changelog found, generate from commits
+          if [ -z "$changelog_content" ]; then
+            prev_tag="${{ steps.prev_tag.outputs.prev_tag }}"
+            if [ -n "$prev_tag" ]; then
+              changelog_content=$(git log --oneline --pretty=format:"- %s" ${prev_tag}..HEAD)
+            else
+              changelog_content="- Initial release"
+            fi
+          fi
+          
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$changelog_content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Update VERSION.md if needed
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          if ! grep -q "## $version" VERSION.md; then
+            # Add new version entry to VERSION.md
+            temp_file=$(mktemp)
+            cat << EOF > "$temp_file"
+          # Version History
+          
+          ## $version - $(date +%Y-%m-%d)
+          
+          ### Changes
+          ${{ steps.changelog.outputs.content }}
+          
+          ---
+          
+          EOF
+            
+            # Append existing content (skip first line if it's the header)
+            tail -n +2 VERSION.md >> "$temp_file" 2>/dev/null || true
+            mv "$temp_file" VERSION.md
+            
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add VERSION.md
+            git commit -m "docs: update VERSION.md for $version [skip ci]" || true
+          fi
+          
+      - name: Create package archive
+        run: |
+          version="${{ steps.version.outputs.version_number }}"
+          
+          # Create installation package
+          mkdir -p "zsh-config-$version"
+          
+          # Copy essential files
+          cp -r aliases functions plugins themes secrets zshrc zprofile install.zsh uninstall.zsh update.zsh test_config.zsh quick_test.zsh manage_secrets.zsh "zsh-config-$version/"
+          cp README.md CHANGELOG.md VERSION.md LICENSE "zsh-config-$version/"
+          
+          # Create archive
+          tar -czf "zsh-config-$version.tar.gz" "zsh-config-$version"
+          zip -r "zsh-config-$version.zip" "zsh-config-$version"
+          
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          prev_tag="${{ steps.prev_tag.outputs.prev_tag }}"
+          
+          cat << EOF > release_notes.md
+          ## What's Changed
+          
+          ${{ steps.changelog.outputs.content }}
+          
+          ## 🚀 Installation
+          
+          ### Fresh Installation
+          \`\`\`bash
+          git clone https://github.com/vish288/zsh-config.git ~/.config/zsh
+          cd ~/.config/zsh
+          ./install.zsh
+          \`\`\`
+          
+          ### Update Existing Installation
+          \`\`\`bash
+          cd ~/.config/zsh
+          ./update.zsh
+          \`\`\`
+          
+          ### Download Package
+          \`\`\`bash
+          # Download and extract
+          curl -L -o zsh-config.tar.gz https://github.com/vish288/zsh-config/releases/download/$version/zsh-config-${{ steps.version.outputs.version_number }}.tar.gz
+          tar -xzf zsh-config.tar.gz
+          cd zsh-config-${{ steps.version.outputs.version_number }}
+          ./install.zsh
+          \`\`\`
+          
+          ## 🧪 Testing
+          
+          \`\`\`bash
+          # Quick validation
+          ./quick_test.zsh
+          
+          # Full configuration test
+          ./test_config.zsh
+          \`\`\`
+          
+          ## 📋 Requirements
+          
+          - **OS**: macOS (tested on macOS 14+)
+          - **Shell**: ZSH
+          - **Package Manager**: Homebrew
+          - **Framework**: Oh My Zsh
+          - **Version Manager**: ASDF
+          - **Optional**: 1Password CLI for secrets management
+          
+          ## 🔗 Links
+          
+          - **Documentation**: [README.md](https://github.com/vish288/zsh-config/blob/main/README.md)
+          - **Installation Guide**: [install.zsh](https://github.com/vish288/zsh-config/blob/main/install.zsh)
+          - **Changelog**: [CHANGELOG.md](https://github.com/vish288/zsh-config/blob/main/CHANGELOG.md)
+          EOF
+          
+          if [ -n "$prev_tag" ]; then
+            echo "" >> release_notes.md
+            echo "**Full Changelog**: https://github.com/vish288/zsh-config/compare/$prev_tag...$version" >> release_notes.md
+          fi
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            zsh-config-${{ steps.version.outputs.version_number }}.tar.gz
+            zsh-config-${{ steps.version.outputs.version_number }}.zip
+            install.zsh
+            test_config.zsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
