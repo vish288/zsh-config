@@ -92,15 +92,39 @@ backup_existing() {
     echo -e "${GREEN}📦 Backup created at: $BACKUP_DIR${NC}"
 }
 
+# Ensure running native architecture (not Rosetta)
+ensure_native_arch() {
+    if [[ "$(uname -m)" == "arm64" && "$(sysctl -n sysctl.proc_translated 2>/dev/null)" == "1" ]]; then
+        print_error "Running under Rosetta 2 on Apple Silicon"
+        echo ""
+        echo "Please run this script natively:"
+        echo "    arch -arm64 zsh ./install.zsh"
+        echo ""
+        echo "Or restart Terminal without Rosetta and try again."
+        exit 1
+    fi
+}
+
 # Install prerequisites
 install_prerequisites() {
     print_step "Installing prerequisites..."
+
+    # Ensure native architecture for Homebrew
+    ensure_native_arch
+
+    # Detect Homebrew prefix based on architecture
+    local brew_prefix
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        brew_prefix="/opt/homebrew"
+    else
+        brew_prefix="/usr/local"
+    fi
 
     # Check for Homebrew
     if ! command_exists brew; then
         print_warning "Homebrew not found. Installing..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+        eval "$($brew_prefix/bin/brew shellenv)"
     fi
     print_success "Homebrew available"
 

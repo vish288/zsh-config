@@ -93,9 +93,11 @@ EOF
 # Default zsh profile
 # Restored by zsh-config uninstaller
 
-# Homebrew (if installed)
+# Homebrew (if installed) - supports both Apple Silicon and Intel
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f "/usr/local/bin/brew" ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
 fi
 EOF
 
