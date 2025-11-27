@@ -42,3 +42,10 @@ Thumbs.db
 local/
 custom/
 personal/
+
+# AI assistant config files (keep local only)
+CLAUDE.md
+.claude/
+.cursor/
+.cursorules
+*.mdc

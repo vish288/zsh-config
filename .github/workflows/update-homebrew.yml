@@ -1,0 +1,67 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    # Only run for non-prerelease versions (skip beta, alpha, rc)
+    if: "!github.event.release.prerelease"
+
+    steps:
+      - name: Extract version
+        id: version
+        run: |
+          version="${{ github.event.release.tag_name }}"
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "version_number=${version#v}" >> $GITHUB_OUTPUT
+
+      - name: Get release tarball SHA256
+        id: sha
+        run: |
+          url="https://github.com/${{ github.repository }}/archive/refs/tags/${{ steps.version.outputs.version }}.tar.gz"
+          sha256=$(curl -sL "$url" | sha256sum | cut -d' ' -f1)
+          echo "sha256=$sha256" >> $GITHUB_OUTPUT
+          echo "url=$url" >> $GITHUB_OUTPUT
+
+      - name: Checkout homebrew tap
+        uses: actions/checkout@v4
+        with:
+          repository: vish288/homebrew-zsh-config
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-tap
+
+      - name: Update formula
+        run: |
+          cd homebrew-tap
+
+          # Update URL
+          sed -i 's|url "https://github.com/vish288/zsh-config/archive/refs/tags/v.*\.tar\.gz"|url "${{ steps.sha.outputs.url }}"|' Formula/zsh-config.rb
+
+          # Update SHA256
+          sed -i 's|sha256 ".*"|sha256 "${{ steps.sha.outputs.sha256 }}"|' Formula/zsh-config.rb
+
+          echo "Updated formula:"
+          cat Formula/zsh-config.rb
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          commit-message: "chore: bump zsh-config to ${{ steps.version.outputs.version }}"
+          title: "chore: bump zsh-config to ${{ steps.version.outputs.version }}"
+          body: |
+            Automated formula update for zsh-config ${{ steps.version.outputs.version }}
+
+            - URL: ${{ steps.sha.outputs.url }}
+            - SHA256: ${{ steps.sha.outputs.sha256 }}
+
+            Release: https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version }}
+          branch: update/${{ steps.version.outputs.version }}
+          base: main

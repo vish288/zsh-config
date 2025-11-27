@@ -5,7 +5,8 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![macOS](https://img.shields.io/badge/macOS-compatible-brightgreen.svg)](https://www.apple.com/macos/)
 [![ZSH](https://img.shields.io/badge/ZSH-5.8+-blue.svg)](https://www.zsh.org/)
-[![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg)](VERSION.md)
+[![Version](https://img.shields.io/badge/Version-1.4.0-blue.svg)](VERSION.md)
+[![Homebrew](https://img.shields.io/badge/Homebrew-tap-orange.svg)](https://github.com/vish288/homebrew-zsh-config)
 
 ## ✨ Features
 
@@ -31,16 +32,28 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 
 ## 🚀 Quick Install
 
-### One-line install:
-```zsh
-curl -fsSL https://raw.githubusercontent.com/vish288/zsh-config/main/install.zsh | zsh
+### Homebrew (Recommended)
+```bash
+brew tap vish288/zsh-config
+brew install zsh-config
+cd $(brew --prefix)/share/zsh-config && ./install.zsh
 ```
 
-### Manual install:
+### One-liner (Homebrew)
+```bash
+brew install vish288/zsh-config/zsh-config && cd $(brew --prefix)/share/zsh-config && ./install.zsh
+```
+
+### Manual Install
 ```zsh
 git clone https://github.com/vish288/zsh-config.git ~/.config/zsh
 cd ~/.config/zsh
 ./install.zsh
+```
+
+### curl Install
+```zsh
+curl -fsSL https://raw.githubusercontent.com/vish288/zsh-config/main/install.zsh | zsh
 ```
 
 ## 📁 Directory Structure
