@@ -5,7 +5,7 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![macOS](https://img.shields.io/badge/macOS-compatible-brightgreen.svg)](https://www.apple.com/macos/)
 [![ZSH](https://img.shields.io/badge/ZSH-5.8+-blue.svg)](https://www.zsh.org/)
-[![Version](https://img.shields.io/badge/Version-1.6.0-blue.svg)](docs/VERSION.md)
+[![Version](https://img.shields.io/badge/Version-1.6.0-blue.svg)](docs/CHANGELOG.md)
 [![Homebrew](https://img.shields.io/badge/Homebrew-tap-orange.svg)](https://github.com/vish288/homebrew-zsh-config)
 
 ## ✨ Features
@@ -72,9 +72,7 @@ curl -fsSL https://raw.githubusercontent.com/vish288/zsh-config/main/install.zsh
 ├── README.md              # This documentation
 ├── LICENSE                # MIT License
 ├── docs/                  # Documentation
-│   ├── CHANGELOG.md       # Version changelog
-│   ├── VERSION.md         # Version history
-│   └── OVERHAUL_SUMMARY.md # Migration notes
+│   └── CHANGELOG.md       # Version history and changelog
 ├── plugins/               # Plugin configurations
 │   ├── oh-my-zsh.zsh      # Oh My Zsh setup
 │   ├── powerlevel10k.zsh  # P10k theme config

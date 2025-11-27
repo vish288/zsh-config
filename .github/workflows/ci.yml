@@ -69,7 +69,6 @@ jobs:
             "zprofile"
             "README.md"
             "docs/CHANGELOG.md"
-            "docs/VERSION.md"
             "LICENSE"
           )
           
@@ -183,29 +182,6 @@ jobs:
           fi
 
           echo "✅ CHANGELOG.md format valid"
-
-      - name: Validate version format
-        run: |
-          echo "🏷️ Validating version format..."
-
-          if [ ! -f docs/VERSION.md ]; then
-            echo "❌ docs/VERSION.md not found"
-            exit 1
-          fi
-
-          # Check for version header
-          if ! grep -q "# Version History" docs/VERSION.md; then
-            echo "❌ VERSION.md missing version history header"
-            exit 1
-          fi
-
-          # Check for at least one version entry
-          if ! grep -q "## v[0-9]" docs/VERSION.md; then
-            echo "❌ VERSION.md missing version entries"
-            exit 1
-          fi
-
-          echo "✅ VERSION.md format valid"
 
   test-installation:
     runs-on: ubuntu-latest
