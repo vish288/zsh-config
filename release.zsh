@@ -98,8 +98,8 @@ fi
 log_info "New version: $NEW_VERSION ($BUMP_TYPE bump${PRERELEASE:+, prerelease: $PRERELEASE})"
 
 # Check if changelog has entry for this version
-if ! grep -q "## \[$NEW_VERSION\]" CHANGELOG.md 2>/dev/null; then
-    if ! grep -q "## \[${NEW_VERSION#v}\]" CHANGELOG.md 2>/dev/null; then
+if ! grep -q "## \[$NEW_VERSION\]" docs/CHANGELOG.md 2>/dev/null; then
+    if ! grep -q "## \[${NEW_VERSION#v}\]" docs/CHANGELOG.md 2>/dev/null; then
         log_warn "CHANGELOG.md missing entry for $NEW_VERSION"
         log_warn "Release notes will be auto-generated from commits"
     fi
