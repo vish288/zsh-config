@@ -182,7 +182,7 @@ jobs:
           - **Shell**: ZSH
           - **Package Manager**: Homebrew
           - **Framework**: Oh My Zsh
-          - **Version Manager**: ASDF
+          - **Version Manager**: mise
           - **Optional**: 1Password CLI for secrets management
           
           ## 🔗 Links

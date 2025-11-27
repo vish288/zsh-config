@@ -18,10 +18,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Install ZSH
+      - name: Install ZSH and shellcheck
         run: |
           sudo apt-get update
-          sudo apt-get install -y zsh
+          sudo apt-get install -y zsh shellcheck
           
       - name: Validate ZSH Configuration
         run: |
@@ -31,7 +31,29 @@ jobs:
             exit 1
           }
           echo "✅ ZSH configuration syntax valid"
-          
+
+      - name: Shellcheck lint
+        run: |
+          echo "🔍 Running shellcheck on shell scripts..."
+          shellcheck_errors=0
+
+          # Check executable scripts (shell agnostic checks)
+          for script in install.zsh uninstall.zsh update.zsh test_config.zsh quick_test.zsh manage_secrets.zsh release.zsh; do
+            if [ -f "$script" ]; then
+              echo "  Checking $script..."
+              # SC1071: ShellCheck only supports sh/bash/dash/ksh - skip zsh-specific syntax errors
+              # SC2039: allow zsh/bash-specific syntax
+              # SC2086: double quote warning (zsh handles this differently)
+              shellcheck -s bash -e SC1071,SC2039,SC2086,SC1090,SC1091,SC2034,SC2148,SC2155,SC2162,SC2059 "$script" || shellcheck_errors=$((shellcheck_errors + 1))
+            fi
+          done
+
+          if [ $shellcheck_errors -gt 0 ]; then
+            echo "⚠️ ShellCheck found issues in $shellcheck_errors file(s), please review"
+          else
+            echo "✅ ShellCheck passed"
+          fi
+
       - name: Check required files
         run: |
           echo "🔍 Checking required files..."

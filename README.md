@@ -16,7 +16,7 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 - **Modular design** - Easy to customize and extend
 
 ### 🛠️ **Development Tools**
-- **asdf version management** - Automatic Node.js, Python, Java version switching
+- **mise version management** - Automatic Node.js, Python, Java version switching
 - **Git integration** - Enhanced git aliases and functions
 - **Docker & Kubernetes** - Productive container management shortcuts
 - **Cloud tools** - GCP, AWS integration ready
@@ -115,7 +115,7 @@ weather Toronto      # Weather info
 ```
 
 ### **Performance Features**
-- ⚡ **Lazy loading** - asdf, gcloud, heavy tools load on demand
+- ⚡ **Lazy loading** - mise, gcloud, heavy tools load on demand
 - 🧠 **Smart completions** - Fast and context-aware
 - 📊 **50k history** - With deduplication and search
 - 🔄 **Auto cleanup** - Temporary files cleaned automatically
@@ -201,7 +201,7 @@ The installer will automatically install these if missing:
 - **Oh My Zsh** - ZSH framework
 - **Powerlevel10k** - Modern theme
 - **ZSH plugins** - autosuggestions, syntax highlighting, etc.
-- **asdf** - Version manager
+- **mise** - Version manager (replaces asdf)
 - **1Password CLI** - Secure secrets management
 
 ## 🐛 Troubleshooting
@@ -215,15 +215,18 @@ The installer will automatically install these if missing:
 ls -la ~/.zshrc ~/.zprofile ~/.p10k.zsh
 ```
 
-### asdf not working
+### mise not working
 ```bash
-# Check asdf installation
-which asdf
-asdf version
+# Check mise installation
+which mise
+mise --version
 
 # Reinstall if needed
-brew uninstall asdf
-brew install asdf
+brew uninstall mise
+brew install mise
+
+# Activate in current shell
+eval "$(mise activate zsh)"
 ```
 
 ### Reset to defaults
@@ -248,7 +251,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Oh My Zsh](https://ohmyz.sh/) - ZSH framework
 - [Powerlevel10k](https://github.com/romkatv/powerlevel10k) - Theme
-- [asdf](https://asdf-vm.com/) - Version manager
+- [mise](https://mise.jdx.dev/) - Version manager
 - [1Password CLI](https://developer.1password.com/docs/cli) - Secrets management
 
 ---
