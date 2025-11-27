@@ -1,5 +1,54 @@
 # Version History
 
+## v1.6.0 - 2025-11-27
+
+### Repository Cleanup
+- Moved documentation to `docs/` folder
+- Source files remain at repository root
+- Updated all documentation to reflect current state
+
+---
+
+## v1.5.1 - 2025-11-27
+
+### Homebrew Fix
+- Updated SHA256 after git history rewrite
+
+---
+
+## v1.5.0 - 2025-11-27
+
+### Distribution & Architecture
+- Homebrew distribution: `brew tap vish288/zsh-config`
+- User settings preserved in `~/.zshrc.local`
+- Rosetta 2 detection for Apple Silicon
+- Dynamic brew prefix (ARM/Intel support)
+- Public repository for anonymous access
+- Git history cleaned (consistent author identity)
+
+---
+
+## v1.4.0 - 2025-11-27
+
+### Release Management
+- Added `release.zsh` script with semantic versioning
+- Prerelease support (`--prerelease/-p beta`)
+- Dry-run mode for preview
+- GitHub Actions for automated releases
+
+---
+
+## v1.3.0 - 2025-11-27
+
+### Major Improvements
+- 90+ git aliases, 15 helper functions
+- Unified update system with retry logic
+- Repo-aware welcome with cowsay
+- zshrc optimized (176 → 80 lines)
+- Lazy-load 1Password (startup: 25.5s → 0.6s)
+
+---
+
 ## v1.2.0 - 2025-07-21
 
 ### 🎯 Major Improvements
