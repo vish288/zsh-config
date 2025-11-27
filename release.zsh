@@ -2,10 +2,11 @@
 # =============================================================================
 # RELEASE SCRIPT - Automated version tagging and release
 # =============================================================================
-# Usage: ./release.zsh [major|minor|patch] [--dry-run|-n]
+# Usage: ./release.zsh [major|minor|patch] [--dry-run|-n] [--prerelease|-p <label>]
 # Default: minor
 # Options:
-#   --dry-run, -n  Show what would happen without creating/pushing tag
+#   --dry-run, -n           Show what would happen without creating/pushing tag
+#   --prerelease, -p <label> Add prerelease suffix (e.g., beta, alpha, rc.1)
 #
 # This script:
 # 1. Ensures clean working tree and up-to-date main branch
@@ -29,12 +30,14 @@ log_error() { echo "${RED}✗${NC} $1"; exit 1; }
 # Parse arguments
 DRY_RUN=false
 BUMP_TYPE="minor"
+PRERELEASE=""
 
-for arg in "$@"; do
-    case "$arg" in
-        --dry-run|-n) DRY_RUN=true ;;
-        major|minor|patch) BUMP_TYPE="$arg" ;;
-        *) log_error "Invalid argument: $arg (use major|minor|patch or --dry-run)" ;;
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dry-run|-n) DRY_RUN=true; shift ;;
+        --prerelease|-p) PRERELEASE="$2"; shift 2 ;;
+        major|minor|patch) BUMP_TYPE="$1"; shift ;;
+        *) log_error "Invalid argument: $1 (use major|minor|patch, --dry-run, or --prerelease <label>)" ;;
     esac
 done
 
@@ -89,7 +92,10 @@ case "$BUMP_TYPE" in
 esac
 
 NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
-log_info "New version: $NEW_VERSION ($BUMP_TYPE bump)"
+if [[ -n "$PRERELEASE" ]]; then
+    NEW_VERSION="${NEW_VERSION}-${PRERELEASE}"
+fi
+log_info "New version: $NEW_VERSION ($BUMP_TYPE bump${PRERELEASE:+, prerelease: $PRERELEASE})"
 
 # Check if changelog has entry for this version
 if ! grep -q "## \[$NEW_VERSION\]" CHANGELOG.md 2>/dev/null; then
