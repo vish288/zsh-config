@@ -69,22 +69,23 @@ jobs:
       - name: Validate directory structure
         run: |
           echo "🏗️ Validating directory structure..."
-          
-          required_dirs=("aliases" "functions" "plugins" "themes" "secrets")
+
+          # Core directories (secrets is gitignored)
+          required_dirs=("aliases" "functions" "plugins" "themes")
           missing_dirs=()
-          
+
           for dir in "${required_dirs[@]}"; do
             if [ ! -d "$dir" ]; then
               missing_dirs+=("$dir")
             fi
           done
-          
+
           if [ ${#missing_dirs[@]} -ne 0 ]; then
             echo "❌ Missing required directories:"
             printf '  - %s\n' "${missing_dirs[@]}"
             exit 1
           fi
-          
+
           echo "✅ Directory structure valid"
           
       - name: Validate script permissions
