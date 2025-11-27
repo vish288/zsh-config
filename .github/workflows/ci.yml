@@ -60,7 +60,7 @@ jobs:
           
           required_files=(
             "install.zsh"
-            "uninstall.zsh" 
+            "uninstall.zsh"
             "update.zsh"
             "test_config.zsh"
             "quick_test.zsh"
@@ -68,8 +68,8 @@ jobs:
             "zshrc"
             "zprofile"
             "README.md"
-            "CHANGELOG.md"
-            "VERSION.md"
+            "docs/CHANGELOG.md"
+            "docs/VERSION.md"
             "LICENSE"
           )
           
@@ -93,7 +93,7 @@ jobs:
           echo "🏗️ Validating directory structure..."
 
           # Core directories (secrets is gitignored)
-          required_dirs=("aliases" "functions" "plugins" "themes")
+          required_dirs=("aliases" "functions" "plugins" "themes" "docs")
           missing_dirs=()
 
           for dir in "${required_dirs[@]}"; do
@@ -160,51 +160,51 @@ jobs:
       - name: Validate changelog format
         run: |
           echo "📝 Validating changelog format..."
-          
-          if [ ! -f CHANGELOG.md ]; then
-            echo "❌ CHANGELOG.md not found"
+
+          if [ ! -f docs/CHANGELOG.md ]; then
+            echo "❌ docs/CHANGELOG.md not found"
             exit 1
           fi
-          
+
           # Check for required sections
-          if ! grep -q "# Changelog" CHANGELOG.md; then
+          if ! grep -q "# Changelog" docs/CHANGELOG.md; then
             echo "❌ CHANGELOG.md missing main header"
             exit 1
           fi
-          
-          if ! grep -q "\[Keep a Changelog\]" CHANGELOG.md; then
+
+          if ! grep -q "\[Keep a Changelog\]" docs/CHANGELOG.md; then
             echo "❌ CHANGELOG.md missing Keep a Changelog reference"
             exit 1
           fi
-          
-          if ! grep -q "\[Semantic Versioning\]" CHANGELOG.md; then
+
+          if ! grep -q "\[Semantic Versioning\]" docs/CHANGELOG.md; then
             echo "❌ CHANGELOG.md missing Semantic Versioning reference"
             exit 1
           fi
-          
+
           echo "✅ CHANGELOG.md format valid"
-          
+
       - name: Validate version format
         run: |
           echo "🏷️ Validating version format..."
-          
-          if [ ! -f VERSION.md ]; then
-            echo "❌ VERSION.md not found"
+
+          if [ ! -f docs/VERSION.md ]; then
+            echo "❌ docs/VERSION.md not found"
             exit 1
           fi
-          
+
           # Check for version header
-          if ! grep -q "# Version History" VERSION.md; then
+          if ! grep -q "# Version History" docs/VERSION.md; then
             echo "❌ VERSION.md missing version history header"
             exit 1
           fi
-          
+
           # Check for at least one version entry
-          if ! grep -q "## v[0-9]" VERSION.md; then
+          if ! grep -q "## v[0-9]" docs/VERSION.md; then
             echo "❌ VERSION.md missing version entries"
             exit 1
           fi
-          
+
           echo "✅ VERSION.md format valid"
 
   test-installation:
