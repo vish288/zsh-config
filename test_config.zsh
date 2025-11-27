@@ -33,17 +33,17 @@ else
     echo "❌ Core functions failed"
 fi
 
-# Test 4: asdf functionality
-echo "\n3. Testing asdf..."
-if command -v asdf &>/dev/null; then
-    echo "✅ asdf available: $(asdf version)"
-    if asdf list nodejs &>/dev/null; then
-        echo "✅ asdf working: Node $(asdf current nodejs)"
+# Test 4: mise functionality
+echo "\n3. Testing mise..."
+if command -v mise &>/dev/null; then
+    echo "✅ mise available: $(mise --version)"
+    if mise list node &>/dev/null 2>&1; then
+        echo "✅ mise working: Node $(mise current node 2>/dev/null || echo 'not set')"
     else
-        echo "⚠️  asdf installed but no nodejs versions"
+        echo "⚠️  mise installed but no node versions"
     fi
 else
-    echo "❌ asdf not found"
+    echo "❌ mise not found"
 fi
 
 # Test 5: System commands
@@ -68,10 +68,10 @@ else
     echo "❌ pnpm not in PATH"
 fi
 
-if echo "$PATH" | grep -q asdf; then
-    echo "✅ asdf shims in PATH"
+if echo "$PATH" | grep -q mise; then
+    echo "✅ mise shims in PATH"
 else
-    echo "❌ asdf shims not in PATH"
+    echo "❌ mise shims not in PATH"
 fi
 
 echo "\n🎉 Configuration test completed!"

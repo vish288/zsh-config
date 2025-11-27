@@ -1,8 +1,12 @@
 # =============================================================================
 # WELCOME MESSAGE - Repo-aware cowsay on shell start
 # =============================================================================
+# Set ZSH_WELCOME=0 in your environment to disable
 
 _show_welcome() {
+    # Skip if disabled via environment variable
+    [[ "${ZSH_WELCOME:-1}" == "0" ]] && return
+
     # Skip in non-interactive or sub-shells
     [[ ! -o interactive ]] && return
     [[ -n "$_WELCOME_SHOWN" ]] && return

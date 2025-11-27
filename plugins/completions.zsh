@@ -10,7 +10,9 @@ setopt AUTO_MENU
 setopt AUTO_LIST
 setopt AUTO_PARAM_SLASH
 
-# Homebrew completions
+# Homebrew completions (cached prefix for performance)
 if type brew &>/dev/null; then
-    FPATH="$(brew --prefix)/share/zsh-completions:$FPATH"
+    # Cache brew prefix - avoid running brew --prefix on every shell start (~50ms)
+    : ${HOMEBREW_PREFIX:=$(brew --prefix)}
+    FPATH="$HOMEBREW_PREFIX/share/zsh-completions:$FPATH"
 fi

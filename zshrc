@@ -11,7 +11,7 @@ SAVEHIST=50000
 HISTFILE=~/.zsh_history
 setopt HIST_VERIFY SHARE_HISTORY APPEND_HISTORY INC_APPEND_HISTORY
 setopt HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE
-setopt HIST_SAVE_NO_DUPS HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS HIST_REDUCE_BLANKS HIST_FCNTL_LOCK
 
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT
 
@@ -53,6 +53,9 @@ source ~/.config/zsh/plugins/powerlevel10k.zsh
 
 # Oh My Zsh and plugins
 source ~/.config/zsh/plugins/oh-my-zsh.zsh
+
+# Modern tools (zoxide, fzf)
+source ~/.config/zsh/plugins/modern-tools.zsh
 
 # Aliases
 for f in ~/.config/zsh/aliases/*.zsh; do [[ -f "$f" ]] && source "$f"; done
