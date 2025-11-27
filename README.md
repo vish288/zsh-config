@@ -135,6 +135,14 @@ weather Toronto      # Weather info
 
 ## 🔧 Customization
 
+### Personal Settings (~/.zshrc.local)
+Your personal settings are preserved in `~/.zshrc.local`, which is automatically sourced.
+```bash
+# Add personal customizations (survives updates)
+echo 'export MY_VAR="value"' >> ~/.zshrc.local
+echo 'alias myalias="my command"' >> ~/.zshrc.local
+```
+
 ### Adding Aliases
 Edit or create files in `~/.config/zsh/aliases/`:
 ```bash
