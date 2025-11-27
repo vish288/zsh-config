@@ -122,8 +122,9 @@ jobs:
           # Create installation package
           mkdir -p "zsh-config-$version"
           
-          # Copy essential files
-          cp -r aliases functions plugins themes secrets zshrc zprofile install.zsh uninstall.zsh update.zsh test_config.zsh quick_test.zsh manage_secrets.zsh "zsh-config-$version/"
+          # Copy essential files (secrets is gitignored, copy if exists)
+          cp -r aliases functions plugins themes zshrc zprofile install.zsh uninstall.zsh update.zsh test_config.zsh quick_test.zsh manage_secrets.zsh release.zsh "zsh-config-$version/"
+          [ -d secrets ] && cp -r secrets "zsh-config-$version/" || mkdir -p "zsh-config-$version/secrets"
           cp README.md CHANGELOG.md VERSION.md LICENSE "zsh-config-$version/"
           
           # Create archive
