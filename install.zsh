@@ -188,9 +188,18 @@ install_config() {
 create_symlinks() {
     print_step "Creating symlinks..."
 
-    # Remove existing files/symlinks
+    # Preserve existing user customizations to .zshrc.local
+    if [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" && ! -f "$HOME/.zshrc.local" ]]; then
+        print_warning "Migrating existing .zshrc settings to .zshrc.local..."
+        mv "$HOME/.zshrc" "$HOME/.zshrc.local"
+        print_success "Your settings preserved in ~/.zshrc.local"
+    fi
+
+    # Remove existing symlinks (not regular files - those are backed up)
     for file in .zshrc .zprofile .p10k.zsh; do
-        [[ -f "$HOME/$file" || -L "$HOME/$file" ]] && rm "$HOME/$file"
+        [[ -L "$HOME/$file" ]] && rm "$HOME/$file"
+        # Remove regular files only if backup exists
+        [[ -f "$HOME/$file" && -d "$BACKUP_DIR" ]] && rm "$HOME/$file"
     done
 
     # Create new symlinks
