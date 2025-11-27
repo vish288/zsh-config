@@ -1,18 +1,18 @@
 # =============================================================================
-# DOCKER ALIASES - Container management shortcuts
+# DOCKER ALIASES - Safe container management
 # =============================================================================
 
 # Basic Docker commands
 alias d='docker'
-alias dc='docker-compose'
-alias dcu='docker-compose up'
-alias dcd='docker-compose down'
-alias dcb='docker-compose build'
-alias dcr='docker-compose restart'
-alias dcl='docker-compose logs'
+alias dc='docker compose'  # Modern syntax (no hyphen)
+alias dcu='docker compose up'
+alias dcd='docker compose down'
+alias dcb='docker compose build'
+alias dcr='docker compose restart'
+alias dcl='docker compose logs -f'
 
-# Docker container management
-alias dps='docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
+# Container management
+alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias dpsa='docker ps -a'
 alias dstop='docker stop'
 alias dstart='docker start'
@@ -20,19 +20,17 @@ alias drestart='docker restart'
 alias drm='docker rm'
 alias drmi='docker rmi'
 
-# Docker system management
+# System management
 alias dclean='docker system prune -f'
-alias dcleanall='docker system prune -a -f'
 alias dimages='docker images'
 alias dvolumes='docker volume ls'
 alias dnetworks='docker network ls'
 
-# Docker logs and exec
+# Logs and exec
 alias dlogs='docker logs -f'
-alias dexec='docker exec -it'
-alias dshell='docker exec -it'
+alias dsh='docker exec -it'
+alias dinspect='docker inspect'
 
-# Useful Docker combinations
-alias dstopall='docker stop $(docker ps -q)'
-alias drmall='docker rm $(docker ps -a -q)'
-alias drmiall='docker rmi $(docker images -q)'
+# Useful shortcuts
+alias dstats='docker stats --no-stream'
+alias dtop='docker stats'

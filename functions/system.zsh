@@ -28,20 +28,20 @@ function sysinfo() {
   echo "⚡ Load: $(uptime | awk -F'load averages:' '{print $2}')"
 }
 
-# Performance monitoring functions
+# Performance monitoring functions (macOS compatible)
 function cpu_usage() {
   echo "📊 Top CPU processes:"
-  ps aux --sort=-%cpu | head -11
+  ps aux -r | head -11
 }
 
 function mem_usage() {
   echo "📊 Top memory processes:"
-  ps aux --sort=-%mem | head -11
+  ps aux -m | head -11
 }
 
 function disk_usage() {
   echo "📊 Disk usage by directory:"
-  du -h --max-depth=1 . | sort -hr
+  du -h -d 1 . 2>/dev/null | sort -hr
 }
 
 # Cleanup functions
