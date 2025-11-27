@@ -76,6 +76,13 @@ for f in ~/.config/zsh/secrets/*.zsh; do [[ -f "$f" ]] && source "$f"; done
 umask 022
 
 # =============================================================================
+# USER LOCAL CUSTOMIZATIONS
+# =============================================================================
+# Add your personal settings to ~/.zshrc.local (preserved across updates)
+
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# =============================================================================
 # WELCOME (repo-aware cowsay)
 # =============================================================================
 
