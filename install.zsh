@@ -122,29 +122,42 @@ install_prerequisites() {
     fi
     print_success "Powerlevel10k available"
 
-    # Install zsh plugins
+    # Install zsh plugins via Homebrew (preferred) or git clone
     local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
 
+    # Install via Homebrew for easier updates
+    local brew_plugins=(zsh-autosuggestions zsh-syntax-highlighting)
+    for plugin in "${brew_plugins[@]}"; do
+        if ! brew list "$plugin" &>/dev/null; then
+            print_warning "Installing $plugin via Homebrew..."
+            brew install "$plugin"
+        fi
+    done
+
+    # Link Homebrew plugins to OMZ custom plugins dir
     if [[ ! -d "$plugins_dir/zsh-autosuggestions" ]]; then
-        retry_with_backoff 3 2 "git clone https://github.com/zsh-users/zsh-autosuggestions '$plugins_dir/zsh-autosuggestions'"
+        ln -sf "$(brew --prefix)/share/zsh-autosuggestions" "$plugins_dir/zsh-autosuggestions"
     fi
-
     if [[ ! -d "$plugins_dir/zsh-syntax-highlighting" ]]; then
-        retry_with_backoff 3 2 "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git '$plugins_dir/zsh-syntax-highlighting'"
+        ln -sf "$(brew --prefix)/share/zsh-syntax-highlighting" "$plugins_dir/zsh-syntax-highlighting"
     fi
 
+    # you-should-use not in Homebrew, clone manually
     if [[ ! -d "$plugins_dir/you-should-use" ]]; then
         retry_with_backoff 3 2 "git clone https://github.com/MichaelAquilina/zsh-you-should-use.git '$plugins_dir/you-should-use'"
     fi
 
     print_success "ZSH plugins installed"
 
-    # Install mise if not present
-    if ! command_exists mise; then
-        print_warning "mise not found. Installing..."
-        brew install mise
-    fi
-    print_success "mise available"
+    # Install CLI tools via Homebrew
+    local cli_tools=(mise fzf zoxide)
+    for tool in "${cli_tools[@]}"; do
+        if ! command_exists "$tool"; then
+            print_warning "$tool not found. Installing..."
+            brew install "$tool"
+        fi
+        print_success "$tool available"
+    done
 
     # Install 1Password CLI
     if ! command_exists op; then

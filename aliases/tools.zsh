@@ -39,11 +39,11 @@ alias kdd='kubectl describe deployment'
 alias kl='kubectl logs -f'
 alias kx='kubectl exec -it'
 
-# Cloud tools
+# Cloud tools (gcl prefix to avoid conflicts with git/gnu cp)
 alias gcl='gcloud'
-alias gcp='gcloud projects list'
-alias gca='gcloud auth list'
-alias gcc='gcloud config list'
+alias gclp='gcloud projects list'
+alias gcla='gcloud auth list'
+alias gclc='gcloud config list'
 
 # Monitoring
 alias watch='watch -n 1'

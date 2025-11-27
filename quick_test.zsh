@@ -12,8 +12,10 @@ echo "=================================================="
 echo "\n1. Testing Prerequisites..."
 command -v brew >/dev/null && echo "✅ Homebrew installed" || echo "❌ Homebrew missing"
 [[ -d ~/.oh-my-zsh ]] && echo "✅ Oh My Zsh installed" || echo "❌ Oh My Zsh missing"
-command -v asdf >/dev/null && echo "✅ asdf installed" || echo "❌ asdf missing"
+command -v mise >/dev/null && echo "✅ mise installed" || echo "❌ mise missing"
 command -v op >/dev/null && echo "✅ 1Password CLI installed" || echo "❌ 1Password CLI missing"
+command -v zoxide >/dev/null && echo "✅ zoxide installed" || echo "❌ zoxide missing"
+command -v fzf >/dev/null && echo "✅ fzf installed" || echo "❌ fzf missing"
 
 # Test 2: Check configuration files
 echo "\n2. Testing Configuration Files..."
@@ -37,10 +39,10 @@ fi
 
 # Test 5: Test key functionality
 echo "\n5. Testing Key Functionality..."
-if zsh -c "asdf version" >/dev/null 2>&1; then
-    echo "✅ asdf working"
+if zsh -c "mise --version" >/dev/null 2>&1; then
+    echo "✅ mise working"
 else
-    echo "❌ asdf not working"
+    echo "❌ mise not working"
 fi
 
 if zsh -c "source ~/.config/zsh/aliases/core.zsh && alias ll" >/dev/null 2>&1; then
