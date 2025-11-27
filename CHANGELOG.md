@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-11-27
+
+### Added
+- **Expanded Git Aliases**: 90+ git aliases in `aliases/git.zsh` covering stash, rebase, worktree, bisect, tags
+- **Git Helper Functions**: 15 functions in `functions/git.zsh` (ginit, gnew, gdel, gsync, gstats, gfind, gprune)
+- **Unified Update System**: `functions/updates.zsh` with retry logic (update-all, update-brew, update-mise, update-omz, update-pnpm-globals)
+- **Repo-Aware Welcome**: `functions/welcome.zsh` with cowsay + lolcat colors, detects Nx/Next.js/Node/Rust/Python/Java/Go projects
+- **Alias Discovery**: `functions/helpers.zsh` for finding aliases
+- **CLAUDE.md**: Repository configuration for AI assistants with MR workflow rules
+
+### Changed
+- **zshrc Optimization**: Reduced from 176 to 80 lines, removed dead PATH entries (gcloud SDK, ruby, ~/bin, PNPM_HOME)
+- **OMZ Plugins**: Reduced from 23 to 13 plugins (removed redundant: gcloud, docker-compose, npm, node, vscode, brew, aliases)
+- **Secrets Loading**: Lazy-load 1Password tokens on-demand (startup: 25.5s → 0.6s)
+- **Gradle Aliases**: Renamed `gw*` → `grd*` to avoid conflict with git worktree `gwt`
+- **Docker Aliases**: Use modern `docker compose` syntax (no hyphen)
+
+### Fixed
+- **SSH Agent Fallback**: Fixed logic bug where fallback never triggered (was checking empty var after setting)
+- **secrets.zsh grep Bug**: Fixed `$(grep -q ...)` returning empty string instead of exit code
+- **macOS Compatibility**: Fixed `ps aux --sort` → `ps aux -r/-m`, `du --max-depth` → `du -d`
+- **Double compinit**: Removed duplicate compinit call in completions.zsh
+- **Welcome Performance**: Added timeout protection for large repos (0.5s git check, 0.3s status)
+
+### Removed
+- Dead `~/bin` directory with obsolete bit script
+- Legacy secrets templates (.ssh_auto_add_template.zsh, .zsh_secrets_template.zsh)
+- Duplicate aliases (ports, myip) from core.zsh (functions exist in system.zsh)
+- extract() function (OMZ plugin handles it)
+
 ## [1.2.0] - 2025-07-21
 
 ### Added
