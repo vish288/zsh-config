@@ -49,6 +49,28 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Retry with exponential backoff
+retry_with_backoff() {
+    local max_attempts=${1:-3}
+    local delay=${2:-2}
+    local attempt=1
+    shift 2
+    local cmd="$@"
+
+    while [[ $attempt -le $max_attempts ]]; do
+        if eval "$cmd"; then
+            return 0
+        fi
+        if [[ $attempt -lt $max_attempts ]]; then
+            print_warning "Attempt $attempt failed, retrying in ${delay}s..."
+            sleep $delay
+            delay=$((delay * 2))
+        fi
+        attempt=$((attempt + 1))
+    done
+    return 1
+}
+
 # Backup existing configuration
 backup_existing() {
     print_step "Backing up existing zsh configuration..."
@@ -93,7 +115,10 @@ install_prerequisites() {
     local p10k_dir="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
     if [[ ! -d "$p10k_dir" ]]; then
         print_warning "Powerlevel10k not found. Installing..."
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
+        retry_with_backoff 3 2 "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git '$p10k_dir'" || {
+            print_error "Failed to install Powerlevel10k"
+            return 1
+        }
     fi
     print_success "Powerlevel10k available"
 
@@ -101,25 +126,25 @@ install_prerequisites() {
     local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
 
     if [[ ! -d "$plugins_dir/zsh-autosuggestions" ]]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions "$plugins_dir/zsh-autosuggestions"
+        retry_with_backoff 3 2 "git clone https://github.com/zsh-users/zsh-autosuggestions '$plugins_dir/zsh-autosuggestions'"
     fi
 
     if [[ ! -d "$plugins_dir/zsh-syntax-highlighting" ]]; then
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$plugins_dir/zsh-syntax-highlighting"
+        retry_with_backoff 3 2 "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git '$plugins_dir/zsh-syntax-highlighting'"
     fi
 
     if [[ ! -d "$plugins_dir/you-should-use" ]]; then
-        git clone https://github.com/MichaelAquilina/zsh-you-should-use.git "$plugins_dir/you-should-use"
+        retry_with_backoff 3 2 "git clone https://github.com/MichaelAquilina/zsh-you-should-use.git '$plugins_dir/you-should-use'"
     fi
 
     print_success "ZSH plugins installed"
 
-    # Install asdf if not present
-    if ! command_exists asdf; then
-        print_warning "asdf not found. Installing..."
-        brew install asdf
+    # Install mise if not present
+    if ! command_exists mise; then
+        print_warning "mise not found. Installing..."
+        brew install mise
     fi
-    print_success "asdf available"
+    print_success "mise available"
 
     # Install 1Password CLI
     if ! command_exists op; then
@@ -205,11 +230,11 @@ test_installation() {
         return 1
     fi
 
-    # Test asdf
-    if zsh -c "asdf version" >/dev/null 2>&1; then
-        print_success "asdf working"
+    # Test mise
+    if zsh -c "mise --version" >/dev/null 2>&1; then
+        print_success "mise working"
     else
-        print_warning "asdf not working - may need manual setup"
+        print_warning "mise not working - may need manual setup"
     fi
 
     print_success "Installation test completed"
@@ -249,7 +274,7 @@ main() {
     echo "Next steps:"
     echo "1. Restart your terminal or run: exec zsh"
     echo "2. Configure your secrets in: ~/.config/zsh/secrets/secrets.zsh"
-    echo "3. Install Node.js versions: asdf install nodejs latest"
+    echo "3. Install Node.js versions: mise install node@lts"
     echo "4. Customize aliases in: ~/.config/zsh/aliases/"
     echo ""
     echo -e "${BLUE}Backup location: $BACKUP_DIR${NC}"
