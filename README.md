@@ -5,7 +5,7 @@ A comprehensive, modular, and performance-optimized ZSH configuration for macOS 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![macOS](https://img.shields.io/badge/macOS-compatible-brightgreen.svg)](https://www.apple.com/macos/)
 [![ZSH](https://img.shields.io/badge/ZSH-5.8+-blue.svg)](https://www.zsh.org/)
-[![Version](https://img.shields.io/badge/Version-1.4.0-blue.svg)](VERSION.md)
+[![Version](https://img.shields.io/badge/Version-1.6.0-blue.svg)](docs/VERSION.md)
 [![Homebrew](https://img.shields.io/badge/Homebrew-tap-orange.svg)](https://github.com/vish288/homebrew-zsh-config)
 
 ## ✨ Features
@@ -60,33 +60,40 @@ curl -fsSL https://raw.githubusercontent.com/vish288/zsh-config/main/install.zsh
 
 ```
 ~/.config/zsh/
-├── README.md              # This documentation
 ├── install.zsh            # Installation script
-├── update.zsh             # Update script
 ├── uninstall.zsh          # Uninstall script
+├── update.zsh             # Update script
+├── release.zsh            # Release management
 ├── test_config.zsh        # Configuration test
 ├── quick_test.zsh         # Fast validation test
 ├── manage_secrets.zsh     # 1Password secrets manager
 ├── zshrc                  # Main configuration
-├── zprofile              # Login shell config
-├── plugins/              # Plugin configurations
-│   ├── oh-my-zsh.zsh     # Oh My Zsh setup
-│   ├── powerlevel10k.zsh # P10k theme config
-│   └── completions.zsh   # Custom completions
-├── aliases/              # Alias definitions
-│   ├── core.zsh          # Essential aliases
-│   ├── git.zsh           # Git shortcuts
-│   ├── docker.zsh        # Docker commands
-│   └── tools.zsh         # Development tools
-├── functions/            # Custom functions
-│   ├── core.zsh          # Utility functions
-│   ├── dev.zsh           # Development helpers
-│   └── system.zsh        # System utilities
-├── secrets/              # Secure configurations
-│   ├── secrets.zsh       # API tokens and keys
-│   └── ssh-keys.zsh      # SSH key management
-└── themes/               # Theme customizations
-    └── p10k.zsh          # Powerlevel10k config
+├── zprofile               # Login shell config
+├── README.md              # This documentation
+├── LICENSE                # MIT License
+├── docs/                  # Documentation
+│   ├── CHANGELOG.md       # Version changelog
+│   ├── VERSION.md         # Version history
+│   └── OVERHAUL_SUMMARY.md # Migration notes
+├── plugins/               # Plugin configurations
+│   ├── oh-my-zsh.zsh      # Oh My Zsh setup
+│   ├── powerlevel10k.zsh  # P10k theme config
+│   └── modern-tools.zsh   # zoxide, fzf integration
+├── aliases/               # Alias definitions
+│   ├── core.zsh           # Essential aliases
+│   ├── git.zsh            # Git shortcuts (90+)
+│   ├── docker.zsh         # Docker commands
+│   └── tools.zsh          # Development tools
+├── functions/             # Custom functions
+│   ├── core.zsh           # Utility functions
+│   ├── git.zsh            # Git helpers (15)
+│   ├── updates.zsh        # Unified update system
+│   ├── welcome.zsh        # Repo-aware welcome
+│   └── system.zsh         # System utilities
+├── secrets/               # Secure configurations (gitignored)
+│   └── secrets.zsh        # 1Password tokens
+└── themes/                # Theme customizations
+    └── p10k.zsh           # Powerlevel10k config
 ```
 
 ## 🎨 What You Get

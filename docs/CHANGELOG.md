@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2025-11-27
+
+### Changed
+- **Repository Structure**: Moved documentation files to `docs/` folder
+- **Source Files**: All executable scripts remain at repository root for easy access
+
+### Fixed
+- **Git History**: Cleaned commit history to use consistent author identity
+- **Documentation**: Updated CHANGELOG and VERSION to reflect all releases
+
+## [1.5.1] - 2025-11-27
+
+### Fixed
+- **Homebrew Formula**: Updated SHA256 after git history cleanup
+
+## [1.5.0] - 2025-11-27
+
+### Added
+- **Homebrew Distribution**: Install via `brew tap vish288/zsh-config && brew install zsh-config`
+- **User Settings Preservation**: Existing `.zshrc` migrated to `~/.zshrc.local` (sourced automatically)
+- **Rosetta 2 Detection**: Guides Apple Silicon users to run natively if under Rosetta emulation
+- **Architecture Support**: Dynamic Homebrew prefix detection for ARM (`/opt/homebrew`) and Intel (`/usr/local`)
+
+### Changed
+- **Public Repository**: Made repo public for anonymous access and Homebrew distribution
+- **Git Configuration**: Enabled rerere, configured consistent author identity
+
+### Security
+- **AI Files Excluded**: Added CLAUDE.md, .claude/, .cursor/, .cursorules, *.mdc to .gitignore
+- **Clean History**: Removed work email addresses from git commit history
+
+## [1.4.0] - 2025-11-27
+
+### Added
+- **Release Script**: `release.zsh` with semantic versioning (major/minor/patch)
+- **Prerelease Support**: `--prerelease/-p` flag for beta/alpha/rc versions
+- **Dry-run Mode**: `--dry-run` to preview release without changes
+
+### Changed
+- **Version Management**: Migrated from mise to dedicated release script
+- **CI/CD**: GitHub Actions workflow for automated releases
+
 ## [1.3.0] - 2025-11-27
 
 ### Added
