@@ -34,9 +34,11 @@ Use conventional commits:
 ### Release Process
 Releases are automatic via GitHub Actions:
 1. Merge PR to main
-2. Create and push version tag: `git tag v1.X.0 && git push --tags`
+2. **ALWAYS use release.zsh script**: `./release.zsh` (or `./release.zsh --dry-run` to preview)
 3. Release workflow generates changelog from commits since last tag
 4. Archives created and attached to GitHub Release
+
+**IMPORTANT**: Never manually create tags - always use `./release.zsh` for consistent versioning and changelog generation.
 
 ### Version Strategy
 - **Major (X.0.0)**: Breaking changes to zshrc structure
